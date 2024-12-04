@@ -1,8 +1,191 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@section Styles{
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 20px;
+        background-color: #f4f4f4;
+        color: #333;
+    }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    h1, h2 {
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .section {
+        margin-bottom: 40px;
+    }
+
+    .section h2 {
+        background-color: #3498db;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
+    .example, .explanation {
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .code {
+        background-color: #2d2d2d;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: "Courier New", monospace;
+        overflow-x: auto;
+    }
+
+    .code pre {
+        margin: 0;
+    }
+
+    .real-life {
+        margin-top: 30px;
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-left: 5px solid #3498db;
+    }
+
+    .real-life h3 {
+        margin-top: 0;
+    }
+
+    .list-item {
+        margin-bottom: 10px;
+    }
+
+    .callout {
+        background-color: #eaf3fc;
+        padding: 10px;
+        border-left: 4px solid #3498db;
+        margin-top: 20px;
+    }
+</style>
+}
+<h1>Factory Design Pattern Explained</h1>
+
+<div class="section">
+    <h2>What the Factory Design Pattern Does</h2>
+    <p>
+        The <strong>Factory Design Pattern</strong> provides a way to create objects without specifying the exact class of object that will be created. Instead of directly using the <code>new</code> keyword, we use a factory method to handle the creation of objects.
+    </p>
 </div>
+
+<div class="section">
+    <h2>Problem it Solves</h2>
+    <ul>
+        <li class="list-item"><strong>Complex Object Creation</strong>: Sometimes creating objects involves complicated setup or specific configuration.</li>
+        <li class="list-item"><strong>Multiple Possible Classes</strong>: When there are many possible types of objects to create, but you don't want the client code to depend on them directly.</li>
+        <li class="list-item"><strong>Tightly Coupled Code</strong>: If objects are created directly in client code, it makes the code tightly coupled to concrete classes, reducing flexibility.</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>How It Works</h2>
+    <p>The factory pattern encapsulates the object creation logic inside a factory class or method. The client interacts with the factory to get an object, without worrying about how it's created or which class is used.</p>
+</div>
+
+<div class="section">
+    <h2>Real-life Example</h2>
+    <div class="real-life">
+        <h3>Coffee Shop Analogy</h3>
+        <p>
+            Imagine you're at a coffee shop where you can order different types of coffee like Espresso, Latte, and Cappuccino. Instead of making each type of coffee manually, there's a <strong>Coffee Machine</strong> (Factory) that knows how to make these different coffees for you.
+        </p>
+        <ul>
+            <li class="list-item"><strong>Order a "Cappuccino"</strong>: You don’t need to know how it’s made. The Coffee Machine (Factory) handles it for you.</li>
+            <li class="list-item"><strong>Order an "Espresso"</strong>: The Coffee Machine makes Espresso instead.</li>
+            <li class="list-item"><strong>Flexibility</strong>: You can add more coffee types (e.g., Mocha) without changing the way you order coffee.</li>
+        </ul>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Factory Design Pattern in Code</h2>
+    <p>The Factory Pattern can be implemented in code like this:</p>
+
+    <div class="example">
+        <p><strong>Code Example:</strong></p>
+        <div class="code">
+            <pre>
+public interface ICoffee {
+    void Prepare();
+}
+
+public class Espresso : ICoffee {
+    public void Prepare() {
+        Console.WriteLine("Preparing Espresso with a small amount of water and coffee beans.");
+    }
+}
+
+public class Latte : ICoffee {
+    public void Prepare() {
+        Console.WriteLine("Preparing Latte with espresso and steamed milk.");
+    }
+}
+
+public class Cappuccino : ICoffee {
+    public void Prepare() {
+        Console.WriteLine("Preparing Cappuccino with espresso, steamed milk, and foam.");
+    }
+}
+
+public static class CoffeeFactory {
+    public static ICoffee GetCoffee(string type) {
+        switch (type.ToLower()) {
+            case "espresso":
+                return new Espresso();
+            case "latte":
+                return new Latte();
+            case "cappuccino":
+                return new Cappuccino();
+            default:
+                throw new ArgumentException("Unknown coffee type");
+        }
+    }
+}
+
+public class CoffeeShop {
+    public static void Main(string[] args) {
+        ICoffee coffee = CoffeeFactory.GetCoffee("Latte");
+        coffee.Prepare();  // Preparing Latte with espresso and steamed milk.
+    }
+}
+                </pre>
+        </div>
+    </div>
+</div>
+
+<div class="section callout">
+    <h2>Benefits of the Factory Pattern</h2>
+    <ul>
+        <li class="list-item"><strong>Encapsulation of Object Creation</strong>: Clients don't need to worry about how objects are created.</li>
+        <li class="list-item"><strong>Flexibility</strong>: New types of objects can be added without changing client code.</li>
+        <li class="list-item"><strong>Decoupling</strong>: The client is decoupled from specific implementations of objects.</li>
+        <li class="list-item"><strong>Maintainability</strong>: If the creation logic changes, only the factory needs to be updated.</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>Conclusion</h2>
+    <p>
+        The Factory Design Pattern is great for simplifying object creation and decoupling client code from concrete classes. It’s particularly useful when you need flexibility and want to centralize object creation in one place.
+    </p>
+</div>
+
