@@ -1,8 +1,196 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@section Styles{
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 20px;
+        background-color: #f4f4f4;
+        color: #333;
+    }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    h1, h2 {
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .section {
+        margin-bottom: 40px;
+    }
+
+    .section h2 {
+        background-color: #3498db;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
+    .example, .explanation {
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .code {
+        background-color: #2d2d2d;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: "Courier New", monospace;
+        overflow-x: auto;
+    }
+
+    .code pre {
+        margin: 0;
+    }
+
+    .real-life {
+        margin-top: 30px;
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-left: 5px solid #3498db;
+    }
+
+    .real-life h3 {
+        margin-top: 0;
+    }
+
+    .list-item {
+        margin-bottom: 10px;
+    }
+
+    .callout {
+        background-color: #eaf3fc;
+        padding: 10px;
+        border-left: 4px solid #3498db;
+        margin-top: 20px;
+    }
+</style>
+}
+
+
+<h1>Repository Design Pattern Explained</h1>
+
+<div class="section">
+    <h2>What the Repository Design Pattern Does</h2>
+    <p>
+        The <strong>Repository Design Pattern</strong> is a pattern that provides a way to access data from a data source (like a database) without exposing the underlying logic of data access to the rest of the application. It acts as an intermediary, helping to keep the application logic separate from the data storage logic.
+    </p>
+</div>
+
+<div class="section">
+    <h2>Problem it Solves</h2>
+    <ul>
+        <li class="list-item"><strong>Data Access Logic in Multiple Places</strong>: Without the Repository pattern, data access logic might be scattered across different parts of the application, making the code hard to maintain.</li>
+        <li class="list-item"><strong>Duplicated Queries</strong>: If you need to perform the same query in multiple places, you’ll end up duplicating the logic.</li>
+        <li class="list-item"><strong>Tight Coupling to Data Source</strong>: If you directly interact with the database in your business logic, the application becomes tightly coupled to the data source, making future changes difficult.</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>How It Works</h2>
+    <p>The Repository Pattern abstracts the data layer. Instead of interacting directly with the database in the business logic, you use a repository to handle the data access. The repository provides methods for adding, updating, deleting, and retrieving data without the consumer needing to know how the data is stored or retrieved.</p>
+</div>
+
+<div class="section">
+    <h2>Real-life Example</h2>
+    <div class="real-life">
+        <h3>Library System Analogy</h3>
+        <p>
+            Imagine you are building a system for managing books in a library. You don’t want the rest of your application to be concerned with how books are stored in the database. Instead, you create a <strong>BookRepository</strong> that handles all the data access. The rest of your application just interacts with this repository to get books, add new ones, or update existing ones.
+        </p>
+        <ul>
+            <li class="list-item"><strong>BookRepository</strong>: This is the class that handles the interaction with the database for books. It abstracts away the complexity of data retrieval.</li>
+            <li class="list-item"><strong>Application Logic</strong>: The application doesn’t need to worry about database queries. It simply interacts with the repository to retrieve, store, or delete books.</li>
+        </ul>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Repository Pattern in Code</h2>
+    <p>The Repository Pattern can be implemented as follows:</p>
+
+    <div class="example">
+        <p><strong>Code Example:</strong></p>
+        <div class="code">
+            <pre>
+public interface IBookRepository {
+    void Add(Book book);
+    Book GetById(int id);
+    IEnumerable<Book> GetAll();
+    void Delete(int id);
+}
+
+public class BookRepository : IBookRepository {
+    private readonly List<Book> _books = new List<Book>();
+
+    public void Add(Book book) {
+        _books.Add(book);
+    }
+
+    public Book GetById(int id) {
+        return _books.FirstOrDefault(b => b.BookId == id);
+    }
+
+    public IEnumerable<Book> GetAll() {
+        return _books;
+    }
+
+    public void Delete(int id) {
+        var book = GetById(id);
+        if (book != null) {
+            _books.Remove(book);
+        }
+    }
+}
+
+public class Book {
+    public int BookId { get; set; }
+    public string Title { get; set; }
+    public string Author { get; set; }
+}
+
+public class LibraryApp {
+    public static void Main(string[] args) {
+        IBookRepository repository = new BookRepository();
+
+        // Adding a book to the repository
+        repository.Add(new Book { BookId = 1, Title = "Design Patterns", Author = "Erich Gamma" });
+
+        // Fetching a book from the repository
+        Book book = repository.GetById(1);
+        Console.WriteLine($"Book: {book.Title} by {book.Author}");
+    }
+}
+                </pre>
+        </div>
+    </div>
+</div>
+
+<div class="section callout">
+    <h2>Benefits of the Repository Pattern</h2>
+    <ul>
+        <li class="list-item"><strong>Separation of Concerns</strong>: Business logic is separated from data access logic, making the code easier to manage and maintain.</li>
+        <li class="list-item"><strong>Centralized Data Access</strong>: All data access is done through repositories, making it easier to change the data source (e.g., switching from a file to a database).</li>
+        <li class="list-item"><strong>Testability</strong>: It’s easier to mock repositories in unit tests, allowing you to focus on testing business logic without worrying about the data layer.</li>
+        <li class="list-item"><strong>Reusability</strong>: The same repository can be reused in multiple parts of the application to access the same data, avoiding duplication of data access code.</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>Conclusion</h2>
+    <p>
+        The Repository Design Pattern is a great way to centralize data access and decouple it from the business logic in your application. By using a repository, you can easily manage how data is retrieved and stored, making your application more maintainable, testable, and flexible.
+    </p>
 </div>
