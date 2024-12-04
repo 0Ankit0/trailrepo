@@ -14,10 +14,13 @@ namespace RepositoryPattern.DAL
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<Student>(entity =>
-			{
-				entity.HasKey(e => e.StudentID);  
-			});
+			 modelBuilder.Entity<Student>(entity =>
+            {
+                entity.HasKey(e => e.StudentID);
+
+                entity.Property(e => e.StudentID)
+                      .ValueGeneratedOnAdd();  
+            });
 
 			base.OnModelCreating(modelBuilder); 
 		}
