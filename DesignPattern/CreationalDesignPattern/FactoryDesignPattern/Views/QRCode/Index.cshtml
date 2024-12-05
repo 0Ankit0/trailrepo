@@ -1,0 +1,97 @@
+﻿@model QRCodeModel
+
+@{
+    Layout = "_Layout";  // Ensure you're using the default layout with Bootstrap CSS linked
+}
+
+<h2 class="text-center my-4">Generate QR Code</h2>
+
+@using (Html.BeginForm("GenerateQRCode", "QRCode", FormMethod.Post, new { @class = "container" }))
+{
+    <div class="row mb-3">
+        <label for="QRCodeType" class="col-sm-3 col-form-label">QR Code Type</label>
+        <div class="col-sm-9">
+            <select id="QRCodeType" name="QRCodeType" class="form-select" required onchange="toggleFields()">
+                <option value="URL">URL</option>
+                <option value="SMS">SMS</option>
+                <option value="PhoneNumber">Phone Number</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- For URL QR code -->
+    <div id="urlField" style="display: none;">
+        <div class="row mb-3">
+            <label for="Data" class="col-sm-3 col-form-label">URL</label>
+            <div class="col-sm-9">
+                <input type="text" id="Data" name="Data" class="form-control"  placeholder="Enter URL" value="@Model.Data" />
+            </div>
+        </div>
+    </div>
+
+    <!-- For PhoneNumber QR code -->
+    <div id="phoneNumberField" style="display: none;">
+        <div class="row mb-3">
+            <label for="PhoneNumber" class="col-sm-3 col-form-label">Phone Number</label>
+            <div class="col-sm-9">
+                <input type="text" id="PhoneNumber" name="PhoneNumber" class="form-control"  placeholder="Enter phone number" value="@Model.PhoneNumber" />
+            </div>
+        </div>
+    </div>
+
+    <!-- For SMS QR code (both phone number and message) -->
+    <div id="smsField" style="display: none;">
+        <div class="row mb-3">
+            <label for="PhoneNumber" class="col-sm-3 col-form-label">Phone Number</label>
+            <div class="col-sm-9">
+                <input type="text" id="PhoneNumber" name="PhoneNumber" class="form-control"  placeholder="Enter phone number" value="@Model.PhoneNumber" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="Data" class="col-sm-3 col-form-label">Message</label>
+            <div class="col-sm-9">
+                <input type="text" id="Data" name="Data" class="form-control"  placeholder="Enter message" value="@Model.Data" />
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Generate QR Code</button>
+    </div>
+}
+
+@if (ViewData["QRCodeImage"] != null)
+{
+    <div class="mt-4 text-center">
+        <h3>Generated QR Code</h3>
+        <img src="data:image/png;base64,@Convert.ToBase64String((byte[])ViewData["QRCodeImage"])" class="img-fluid" />
+    </div>
+}
+
+
+<script>
+    // JavaScript function to toggle fields based on QRCodeType selection
+    function toggleFields() {
+        var qrCodeType = document.getElementById('QRCodeType').value;
+
+        // Hide all fields first
+        document.getElementById('urlField').style.display = 'none';
+        document.getElementById('phoneNumberField').style.display = 'none';
+        document.getElementById('smsField').style.display = 'none';
+
+        // Show fields based on selected QRCodeType
+        if (qrCodeType === 'URL') {
+            document.getElementById('urlField').style.display = 'block';
+        } else if (qrCodeType === 'PhoneNumber') {
+            document.getElementById('phoneNumberField').style.display = 'block';
+        } else if (qrCodeType === 'SMS') {
+            document.getElementById('smsField').style.display = 'block';
+        }
+    }
+
+    // Initial call to set the correct field visibility based on the default selected QR code type
+    window.onload = function () {
+        toggleFields();
+    }
+</script>

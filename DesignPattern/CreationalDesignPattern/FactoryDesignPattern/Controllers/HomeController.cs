@@ -17,6 +17,11 @@ namespace FactoryDesignPattern.Controllers
         {
             return View();
         }
+        
+        public IActionResult Example()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {

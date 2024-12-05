@@ -1,0 +1,273 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@section Styles{ 
+<style>
+        body {
+          background-color: #f8f9fa;
+          padding-top: 50px;
+        }
+        .section-title {
+          color: #0d6efd;
+          margin-bottom: 30px;
+        }
+        .code-section {
+          background-color: #f1f1f1;
+          padding: 20px;
+          border-radius: 5px;
+          font-size: 14px;
+        }
+        .code-block {
+          background-color: #282c34;
+          color: #f8f9fa;
+          border-radius: 5px;
+          padding: 15px;
+          margin-bottom: 20px;
+          font-family: "Courier New", Courier, monospace;
+          overflow-x: auto;
+        }
+        .code-block pre {
+          margin-bottom: 0;
+        }
+        .explanation {
+          margin-bottom: 40px;
+        }
+        .conclusion {
+          margin-top: 40px;
+          background-color: #e9ecef;
+          padding: 20px;
+          border-radius: 5px;
+        }
+    </style>
+}
+
+    <div class="container">
+        <section>
+            <h1 class="section-title text-center">Notification Service Refactor with Factory Design Pattern in ASP.NET Core</h1>
+
+            <p class="lead text-center">This section demonstrates how to refactor a notification service to use the Factory Design Pattern in ASP.NET Core. The goal is to create a flexible system for sending notifications through multiple providers like Firebase, OneSignal, and Custom services.</p>
+
+            <h2 class="mt-5">1. Define the <code>INotificationProvider</code> Interface</h2>
+            <div class="code-section">
+                <div class="code-block">
+                    <pre><code>
+namespace Notify.Server.Services
+{
+    public interface INotificationProvider
+    {
+        Task<bool> SendNotification(MessageModel messageModel);
+    }
+}
+        </code></pre>
+                </div>
+                <p class="explanation">The <code>INotificationProvider</code> interface defines the contract that all notification providers must follow. It ensures that each provider has a method <code>SendNotification</code>, which takes a <code>MessageModel</code> and returns a <code>bool</code> indicating success or failure.</p>
+            </div>
+
+            <h2>2. Implement Concrete Notification Providers</h2>
+
+            <h3>Firebase Notification Provider</h3>
+            <div class="code-section">
+                <div class="code-block">
+                    <pre><code>
+namespace Notify.Server.Services
+{
+    public class FirebaseNotificationProvider : INotificationProvider
+    {
+        private readonly ProviderMaster _provider;
+
+        public FirebaseNotificationProvider(ProviderMaster provider)
+        {
+            _provider = provider;
+        }
+
+        public async Task<bool> SendNotification(MessageModel messageModel)
+        {
+            FirebaseApp.Create(new AppOptions
+            {
+                Credential = GoogleCredential.FromJson(_provider.Secret)
+            });
+
+            var message = new Message
+            {
+                Token = messageModel.Receiver,
+                Notification = new Notification
+                {
+                    Title = messageModel.Title,
+                    Body = messageModel.Content
+                }
+            };
+
+            try
+            {
+                string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions as needed
+                return false;
+            }
+        }
+    }
+}
+        </code></pre>
+                </div>
+                <p class="explanation">This is the <code>FirebaseNotificationProvider</code> class, which implements the <code>INotificationProvider</code> interface. It handles the logic of sending notifications through Firebase Cloud Messaging (FCM). It creates a Firebase app instance using the provider's credentials and sends a notification message to the recipient's token.</p>
+            </div>
+
+            <h3>OneSignal Notification Provider</h3>
+            <div class="code-section">
+                <div class="code-block">
+                    <pre><code>
+namespace Notify.Server.Services
+{
+    public class OneSignalNotificationProvider : INotificationProvider
+    {
+        private readonly HttpClient _httpClient;
+        private readonly ProviderMaster _provider;
+
+        public OneSignalNotificationProvider(HttpClient httpClient, ProviderMaster provider)
+        {
+            _httpClient = httpClient;
+            _provider = provider;
+        }
+
+        public async Task<bool> SendNotification(MessageModel messageModel)
+        {
+            var oneSignalMessage = new
+            {
+                app_id = _provider.Secret,
+                contents = new { en = messageModel.Content },
+                include_player_ids = new[] { messageModel.Receiver }
+            };
+
+            var requestContent = new StringContent(JsonSerializer.Serialize(oneSignalMessage), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("https://onesignal.com/api/v1/notifications", requestContent);
+
+            return response.IsSuccessStatusCode;
+        }
+    }
+}
+        </code></pre>
+                </div>
+                <p class="explanation">The <code>OneSignalNotificationProvider</code> class implements the <code>INotificationProvider</code> interface for sending notifications through OneSignal. It uses <code>HttpClient</code> to make an HTTP POST request to the OneSignal API, passing the message content and recipient details in the request.</p>
+            </div>
+
+            <h3>Custom Notification Provider</h3>
+            <div class="code-section">
+                <div class="code-block">
+                    <pre><code>
+namespace Notify.Server.Services
+{
+    public class CustomNotificationProvider : INotificationProvider
+    {
+        private readonly ProviderMaster _provider;
+
+        public CustomNotificationProvider(ProviderMaster provider)
+        {
+            _provider = provider;
+        }
+
+        public async Task<bool> SendNotification(MessageModel messageModel)
+        {
+            // Implement your custom notification logic here
+            return true;
+        }
+    }
+}
+        </code></pre>
+                </div>
+                <p class="explanation">The <code>CustomNotificationProvider</code> class is a placeholder for implementing custom notification logic. It doesn't use any third-party services but can be customized with any provider-specific code to send notifications.</p>
+            </div>
+
+            <h2>3. Implement the Notification Provider Factory</h2>
+            <div class="code-section">
+                <div class="code-block">
+                    <pre><code>
+namespace Notify.Server.Services
+{
+    public interface INotificationProviderFactory
+    {
+        INotificationProvider CreateNotificationProvider(ProviderMaster provider);
+    }
+
+    public class NotificationProviderFactory : INotificationProviderFactory
+    {
+        private readonly HttpClient _httpClient;
+
+        public NotificationProviderFactory(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        public INotificationProvider CreateNotificationProvider(ProviderMaster provider)
+        {
+            switch (provider.Provider)
+            {
+                case ProviderEnum.Firebase:
+                    return new FirebaseNotificationProvider(provider);
+                case ProviderEnum.OneSignal:
+                    return new OneSignalNotificationProvider(_httpClient, provider);
+                case ProviderEnum.Custom:
+                    return new CustomNotificationProvider(provider);
+                default:
+                    throw new NotImplementedException($"Notification provider {provider.Provider} not supported.");
+            }
+        }
+    }
+}
+        </code></pre>
+                </div>
+                <p class="explanation">The <code>NotificationProviderFactory</code> class is responsible for creating the correct notification provider based on the <code>ProviderEnum</code> in the <code>ProviderMaster</code> object. It handles the instantiation logic for different providers and abstracts away the complexity from the service.</p>
+            </div>
+
+            <h2>4. Refactor the Notification Service to Use the Factory</h2>
+            <div class="code-section">
+                <div class="code-block">
+                    <pre><code>
+namespace Notify.Server.Services
+{
+    public class NotificationService : INotificationService
+    {
+        private readonly INotificationProviderFactory _notificationProviderFactory;
+
+        public NotificationService(INotificationProviderFactory notificationProviderFactory)
+        {
+            _notificationProviderFactory = notificationProviderFactory;
+        }
+
+        public async Task<bool> SendNotification(ProviderMaster provider, MessageModel messageModel)
+        {
+            var notificationProvider = _notificationProviderFactory.CreateNotificationProvider(provider);
+            return await notificationProvider.SendNotification(messageModel);
+        }
+    }
+}
+        </code></pre>
+                </div>
+                <p class="explanation">The <code>NotificationService</code> class now relies on the <code>INotificationProviderFactory</code> to create the appropriate notification provider. The factory abstracts the logic for choosing the correct provider based on the provider type (e.g., Firebase, OneSignal, Custom). The service only calls <code>SendNotification</code> on the created provider.</p>
+            </div>
+
+            <h2>5. Register Services in the Dependency Injection Container</h2>
+            <div class="code-section">
+                <div class="code-block">
+                    <pre><code>
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddHttpClient(); // Register HttpClient for OneSignal
+    services.AddScoped<INotificationProviderFactory, NotificationProviderFactory>();
+    services.AddScoped<INotificationService, NotificationService>();
+}
+        </code></pre>
+                </div>
+                <p class="explanation">In the <code>ConfigureServices</code> method, we register the factory and the notification service with the ASP.NET Core dependency injection container. The <code>AddHttpClient</code> method is used to register the <code>HttpClient</code> service for making HTTP requests to OneSignal.</p>
+            </div>
+
+            <div class="conclusion">
+                <h3>Conclusion</h3>
+                <p>This implementation of the Factory Design Pattern makes it easy to add new notification providers in the future. The <code>NotificationService</code> class is decoupled from the specifics of each provider, and the provider selection logic is encapsulated in the factory, promoting flexibility and scalability.</p>
+            </div>
+        </section>
+    </div>
+
+

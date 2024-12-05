@@ -1,21 +1,14 @@
-using FactoryDesignPattern.DAL;
-using FactoryDesignPattern.Factory;
-using Microsoft.EntityFrameworkCore;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-// Register the factory in Dependency Injection container
-builder.Services.AddSingleton<IStudentFactory, StudentFactory>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 
-// Register the context
-builder.Services.AddDbContext<StudentContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
 
 var app = builder.Build();
 
