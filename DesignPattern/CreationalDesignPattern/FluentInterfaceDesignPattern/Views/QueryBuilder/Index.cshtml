@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Query Builder";
+}
+
+<h1 class="text-center my-4">Query Builder</h1>
+
+<div class="container">
+    <form method="post" action="/QueryBuilder/GenerateQuery" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="tableName" class="form-label">Table Name:</label>
+            <input type="text" id="tableName" name="tableName" class="form-control" placeholder="Enter table name" required />
+            <div class="invalid-feedback">Please enter the table name.</div>
+        </div>
+        <div class="mb-3">
+            <label for="fields" class="form-label">Fields (comma-separated):</label>
+            <input type="text" id="fields" name="fields" class="form-control" placeholder="Enter fields (e.g., id, name)" required />
+            <div class="invalid-feedback">Please enter at least one field.</div>
+        </div>
+        <div class="mb-3">
+            <label for="joinTable" class="form-label">Join Table:</label>
+            <input type="text" id="joinTable" name="joinTable" class="form-control" placeholder="Enter join table name (optional)" />
+        </div>
+        <div class="mb-3">
+            <label for="onCondition" class="form-label">ON Condition:</label>
+            <input type="text" id="onCondition" name="onCondition" class="form-control" placeholder="Enter ON condition (optional)" />
+        </div>
+        <div class="mb-3">
+            <label for="whereCondition" class="form-label">WHERE Condition:</label>
+            <input type="text" id="whereCondition" name="whereCondition" class="form-control" placeholder="Enter WHERE condition (optional)" />
+        </div>
+        <div class="mb-3">
+            <label for="limit" class="form-label">Limit:</label>
+            <input type="number" id="limit" name="limit" class="form-control" value="10" />
+        </div>
+        <div class="mb-3">
+            <label for="offset" class="form-label">Offset:</label>
+            <input type="number" id="offset" name="offset" class="form-control" value="0" />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Generate Query</button>
+    </form>
+
+    @if (ViewBag.Query != null)
+    {
+        <div class="mt-4">
+            <h2>Generated Query</h2>
+            <pre class="bg-light p-3 border">@ViewBag.Query</pre>
+        </div>
+    }
+</div>
+
