@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace RepositoryPattern.Repository
 {
-	public class StudentRepository : IStudentRepository
+	public class StudentRepository<T> : IStudentRepository<T> where T : class
 	{
 		private readonly StudentContext _context;
 
@@ -24,6 +24,11 @@ namespace RepositoryPattern.Repository
 		public Student GetById(int id)
 		{
 			return _context.Students.Find(id);
+		}
+
+		public string GetName(int id)
+		{
+            return _context.Students.Find(id).FullName ?? "";
 		}
 
 		// Add a new student
@@ -46,6 +51,22 @@ namespace RepositoryPattern.Repository
 			{
 				_context.Students.Remove(student);
 			}
+		}
+
+
+		public Task BeginTransaction()
+		{
+            return _context.Database.BeginTransactionAsync();
+		}
+
+		public Task Commit()
+        {
+            return _context.Database.CommitTransactionAsync();
+        }
+
+		public Task Rollback()
+		{
+            return _context.Database.RollbackTransactionAsync();
 		}
 
 		// Save changes to the context

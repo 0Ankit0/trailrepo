@@ -12,10 +12,10 @@ namespace RepositoryPattern.Controllers
 {
     public class StudentController : Controller
     {
-		private readonly IStudentRepository _studentRepository;
+		private readonly IStudentRepository<Student> _studentRepository;
 
 		// Constructor injection via DI
-		public StudentController(IStudentRepository studentRepository)
+		public StudentController(IStudentRepository<Student> studentRepository)
 		{
 			_studentRepository = studentRepository;
 		}

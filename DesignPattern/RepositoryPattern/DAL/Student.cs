@@ -11,6 +11,11 @@ namespace RepositoryPattern.DAL
 		public DateTime DateOfBirth { get; set; }
 		public string Gender { get; set; }
 
+		public string FullName
+        {
+            get { return FirstName + " " + LastName; }
+        }
+
 		public string FormattedDateOfBirth
 		{
 			get { return DateOfBirth.ToString("yyyy-MM-dd"); }
