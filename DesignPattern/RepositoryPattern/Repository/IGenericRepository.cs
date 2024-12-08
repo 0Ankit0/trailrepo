@@ -4,11 +4,11 @@ namespace RepositoryPattern.Repository
 {
     public interface IGenericRepository<T> where T : class
     {
-        IEnumerable<Student> GetAll();
-        Student GetById(int studentId);
-        void Add(Student student);
-        void Update(Student student);
-        void Delete(int studentId);
+        Task<IEnumerable<T>> GetAll();
+        Task<T?> GetById(int id);
+        Task Add(T data);
+        Task Update(T id);
+        Task Delete(int id);
         Task BeginTransaction();
         Task Commit();
         Task Rollback();

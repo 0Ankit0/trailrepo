@@ -12,10 +12,10 @@ namespace RepositoryPattern.Controllers
 {
     public class StudentController : Controller
     {
-		private readonly IStudentRepository<Student> _studentRepository;
+		private readonly BaseRepository<Student> _studentRepository;
 
 		// Constructor injection via DI
-		public StudentController(IStudentRepository<Student> studentRepository)
+		public StudentController(BaseRepository<Student> studentRepository)
 		{
 			_studentRepository = studentRepository;
 		}
@@ -23,7 +23,7 @@ namespace RepositoryPattern.Controllers
 		// GET: Students
 		public async Task<IActionResult> Index()
         {
-            var students = _studentRepository.GetAll();
+            var students =await _studentRepository.GetAll();
             return View(students);
         }
 
@@ -35,7 +35,7 @@ namespace RepositoryPattern.Controllers
                 return NotFound();
             }
 
-            var student = _studentRepository.GetById(id.Value);
+            var student =await _studentRepository.GetById(id.Value);
             if (student == null)
             {
                 return NotFound();
@@ -59,8 +59,8 @@ namespace RepositoryPattern.Controllers
         {
             if (ModelState.IsValid)
             {
-                _studentRepository.Add(student);
-                _studentRepository.Save();
+                await _studentRepository.Add(student);
+                 _studentRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(student);
@@ -74,7 +74,7 @@ namespace RepositoryPattern.Controllers
                 return NotFound();
             }
 
-            var student = _studentRepository.GetById(id.Value);
+            var student =await _studentRepository.GetById(id.Value);
             if (student == null)
             {
                 return NotFound();
@@ -99,12 +99,12 @@ namespace RepositoryPattern.Controllers
                 try
                 {
 
-                    _studentRepository.Update(student);
+                    await _studentRepository.Update(student);
                     _studentRepository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(student.StudentID))
+                    if (!await StudentExists(student.StudentID))
                     {
                         return NotFound();
                     }
@@ -126,7 +126,7 @@ namespace RepositoryPattern.Controllers
                 return NotFound();
             }
 
-            var student = _studentRepository.GetById(id.Value);
+            var student =await _studentRepository.GetById(id.Value);
             if (student == null)
             {
                 return NotFound();
@@ -140,14 +140,19 @@ namespace RepositoryPattern.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _studentRepository.Delete(id);
+            await _studentRepository.Delete(id);
             _studentRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StudentExists(int id)
+        private async Task<bool> StudentExists(int id)
         {
-            return _studentRepository.GetAll().Any(e => e.StudentID == id);
+            var student =await _studentRepository.GetById(id);
+            if (student == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
