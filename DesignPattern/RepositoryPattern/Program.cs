@@ -13,7 +13,7 @@ builder.Services.AddDbContext<StudentContext>(options =>
 );
 
 // Register the repository
-builder.Services.AddScoped<IStudentRepository<Student>, StudentRepository<Student>>();
+builder.Services.AddScoped(typeof(IStudentRepository<>), typeof(StudentRepository<>));
 
 var app = builder.Build();
 
