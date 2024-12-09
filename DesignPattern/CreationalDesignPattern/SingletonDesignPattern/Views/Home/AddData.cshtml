@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1 class="text-center my-4">Welcome to the Home Page</h1>
+<p class="text-center">Use the form below to add or update a key-value pair in the shared data.</p>
+
+<div class="container">
+    <form method="post" asp-action="AddOrUpdateData" class="bg-light p-4 rounded shadow-sm">
+        <div class="mb-3">
+            <label for="key" class="form-label">Key:</label>
+            <input type="text" id="key" name="key" class="form-control" placeholder="Enter key" required />
+        </div>
+        <div class="mb-3">
+            <label for="value" class="form-label">Value:</label>
+            <input type="text" id="value" name="value" class="form-control" placeholder="Enter value" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Add or Update</button>
+    </form>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info mt-3">
+            @TempData["Message"]
+        </div>
+    }
+
+    <div class="mt-4 text-center">
+        <a href="/Home/ViewSharedData" class="btn btn-success">View Shared Data</a>
+    </div>
+</div>
