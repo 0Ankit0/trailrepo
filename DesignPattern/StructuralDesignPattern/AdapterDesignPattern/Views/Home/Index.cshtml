@@ -1,0 +1,179 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@section Styles {
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        .example, .explanation {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .code {
+            background-color: #2d2d2d;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: "Courier New", monospace;
+            overflow-x: auto;
+        }
+
+        .code pre {
+            margin: 0;
+        }
+
+        .real-life {
+            margin-top: 30px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+        }
+
+        .real-life h3 {
+            margin-top: 0;
+        }
+
+        .list-item {
+            margin-bottom: 10px;
+        }
+
+        .callout {
+            background-color: #eaf3fc;
+            padding: 10px;
+            border-left: 4px solid #3498db;
+            margin-top: 20px;
+        }
+    </style>
+}
+
+
+<h1>Adapter Design Pattern Explained</h1>
+
+<div class="section">
+    <h2>What the Adapter Design Pattern Does</h2>
+    <p>
+        The <strong>Adapter Design Pattern</strong> is a structural design pattern that allows two incompatible interfaces to work together. It acts as a bridge between the two interfaces, enabling objects with incompatible interfaces to collaborate.
+    </p>
+</div>
+
+<div class="section">
+    <h2>Problem it Solves</h2>
+    <ul>
+        <li class="list-item"><strong>Incompatibility Issues</strong>: When two components cannot work together because their interfaces are different.</li>
+        <li class="list-item"><strong>Legacy Code Integration</strong>: When trying to integrate new functionality into an existing system without changing the legacy code.</li>
+        <li class="list-item"><strong>Reusability</strong>: Allows using existing classes in a new system without modifying their source code.</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>How It Works</h2>
+    <p>The Adapter Pattern works by creating an adapter class that wraps an existing class. This adapter provides a new interface that matches the expected interface, translating method calls from one interface to another.</p>
+</div>
+
+<div class="section">
+    <h2>Real-life Example</h2>
+    <div class="real-life">
+        <h3>Power Plug Adapter Analogy</h3>
+        <p>
+            Imagine you have an electronic device with a two-pin plug, but the power socket in your house is a three-pin socket. You use a power plug adapter to connect the two. The adapter takes the two-pin plug and adapts it to fit into the three-pin socket, allowing the device to work without modifying either the plug or the socket.
+        </p>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Adapter Pattern in Code</h2>
+    <p>The Adapter Pattern can be implemented as follows:</p>
+
+    <div class="example">
+        <p><strong>Code Example:</strong></p>
+        <div class="code">
+            <pre>
+// Target Interface
+public interface ITarget {
+    string GetRequest();
+}
+
+// Adaptee
+public class Adaptee {
+    public string SpecificRequest() {
+        return "Specific request from Adaptee";
+    }
+}
+
+// Adapter
+public class Adapter : ITarget {
+    private readonly Adaptee _adaptee;
+
+    public Adapter(Adaptee adaptee) {
+        _adaptee = adaptee;
+    }
+
+    public string GetRequest() {
+        // Translate the Adaptee method into Target's interface
+        return _adaptee.SpecificRequest();
+    }
+}
+
+// Client Code
+public class Client {
+    public static void Main(string[] args) {
+        Adaptee adaptee = new Adaptee();
+        ITarget target = new Adapter(adaptee);
+
+        Console.WriteLine(target.GetRequest());
+    }
+}
+            </pre>
+        </div>
+    </div>
+</div>
+
+<div class="section callout">
+    <h2>Benefits of the Adapter Pattern</h2>
+    <ul>
+        <li class="list-item"><strong>Compatibility</strong>: Enables compatibility between otherwise incompatible components.</li>
+        <li class="list-item"><strong>Flexibility</strong>: Allows for the integration of new functionality without altering existing code.</li>
+        <li class="list-item"><strong>Reusability</strong>: Facilitates the reuse of existing classes in new systems.</li>
+        <li class="list-item"><strong>Single Responsibility</strong>: Adapters keep the logic for integration separate from the main business logic.</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>Conclusion</h2>
+    <p>
+        The Adapter Design Pattern is a powerful tool for enabling compatibility between incompatible systems. By using an adapter, you can bridge the gap between different interfaces, allowing for seamless integration and enhanced flexibility.
+    </p>
+</div>

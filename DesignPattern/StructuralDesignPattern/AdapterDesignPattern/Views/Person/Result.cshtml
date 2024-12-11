@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Person>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Original List</h2>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in Model)
+            {
+                <tr>
+                    <td>@person.Id</td>
+                    <td>@person.Name</td>
+                    <td>@person.Age</td>
+                    <td>@person.City</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2 class="my-4">DataTable (Filtered: Name and Age)</h2>
+    <div class="border p-3 bg-light">
+        <pre class="mb-0">@ViewBag.DataTableWithKeys</pre>
+    </div>
+
+    <h2 class="my-4">DataTable (All Properties)</h2>
+    <div class="border p-3 bg-light">
+        <pre class="mb-0">@ViewBag.DataTableAll</pre>
+    </div>
+</div>

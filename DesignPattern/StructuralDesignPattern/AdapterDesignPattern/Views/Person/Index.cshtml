@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Person>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Original List</h2>
+    <form asp-action="ProcessPeople" method="post">
+        <div id="people-container" class="row gy-3">
+            <div class="col-12 person-entry">
+                <div class="row g-2">
+                    <input type="hidden" name="People[0].Id" value="0" />
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="People[0].Name" placeholder="Name" required />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="People[0].Age" placeholder="Age" required />
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="People[0].City" placeholder="City" required />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-3">
+            <button type="button" class="btn btn-outline-primary" onclick="addPerson()">Add Another Person</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let personCount = 1;
+
+    function addPerson() {
+        const container = document.getElementById("people-container");
+        const div = document.createElement("div");
+        div.className = "col-12 person-entry";
+        div.innerHTML = `
+                    <div class="row g-2">
+                        <input type="hidden" name="People[${personCount}].Id" value="${personCount}" />
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="People[${personCount}].Name" placeholder="Name" required />
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control" name="People[${personCount}].Age" placeholder="Age" required />
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="People[${personCount}].City" placeholder="City" required />
+                        </div>
+                    </div>`;
+        container.appendChild(div);
+        personCount++;
+    }
+</script>
