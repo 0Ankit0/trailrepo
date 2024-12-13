@@ -4,6 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.Json;
+using System.Xml;
 
 namespace AdapterDesignPattern.Adapter
 {
@@ -40,28 +42,29 @@ namespace AdapterDesignPattern.Adapter
 
             return dataTable;
         }
-        public  string DataTableToString(DataTable dataTable)
-        {
-            var stringBuilder = new System.Text.StringBuilder();
-            foreach (DataColumn column in dataTable.Columns)
-            {
-                stringBuilder.Append(column.ColumnName + "\t");
-            }
-            stringBuilder.AppendLine();
+		public string DataTableToJson(DataTable dataTable)
+		{
+			var rows = new List<Dictionary<string, object>>();
 
-            foreach (DataRow row in dataTable.Rows)
-            {
-                foreach (var item in row.ItemArray)
-                {
-                    stringBuilder.Append(item + "\t");
-                }
-                stringBuilder.AppendLine();
-            }
+			foreach (DataRow row in dataTable.Rows)
+			{
+				var rowDict = new Dictionary<string, object>();
+				foreach (DataColumn column in dataTable.Columns)
+				{
+					rowDict[column.ColumnName] = row[column];
+				}
+				rows.Add(rowDict);
+			}
 
-            return stringBuilder.ToString();
-        }
+			return JsonSerializer.Serialize(rows, new JsonSerializerOptions
+			{
+				WriteIndented = true // For pretty-printing
+			});
+			//OR you can direcyly use the Newtonsoft package to do it
+			//return JsonConvert.SerializeObject(dataTable, Formatting.Indented); 
+		}
 
-        private PropertyInfo GetPropertyInfo<T>(Expression<Func<T, object>> selector)
+		private PropertyInfo GetPropertyInfo<T>(Expression<Func<T, object>> selector)
         {
             if (selector.Body is UnaryExpression unaryExpression && unaryExpression.Operand is MemberExpression memberExpression)
             {

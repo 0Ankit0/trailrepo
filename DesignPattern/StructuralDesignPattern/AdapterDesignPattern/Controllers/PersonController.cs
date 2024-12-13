@@ -33,8 +33,8 @@ namespace AdapterDesignPattern.Controllers
             var dataTable = _adapter.ConvertToDataTable(People);
             var filteredDataTable = _adapter.ConvertToDataTable(People, x => x.Name, x => x.Age);
             // Convert DataTable to string for display
-            ViewBag.DataTableAll = _adapter.DataTableToString(dataTable); // For all properties
-            ViewBag.DataTableWithKeys = _adapter.DataTableToString(filteredDataTable); // For filtered properties
+            ViewBag.DataTableAll = _adapter.DataTableToJson(dataTable); // For all properties
+            ViewBag.DataTableWithKeys = _adapter.DataTableToJson(filteredDataTable); // For filtered properties
 
             return View("Result", People);
         }
