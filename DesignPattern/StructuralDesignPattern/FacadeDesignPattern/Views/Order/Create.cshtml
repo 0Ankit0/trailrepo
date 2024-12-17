@@ -1,0 +1,51 @@
+﻿@model Order
+
+<h2>Create Order</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3>Create Order</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <!-- Product Name -->
+                        <div class="mb-3">
+                            <label asp-for="ProductName" class="form-label">Product Name</label>
+                            <input asp-for="ProductName" class="form-control" placeholder="Enter product name" required />
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="mb-3">
+                            <label asp-for="Quantity" class="form-label">Quantity</label>
+                            <input asp-for="Quantity" class="form-control" type="number" min="1" placeholder="Enter quantity" required />
+                        </div>
+
+                        <!-- Send Email Option -->
+                        <div class="form-check mb-3">
+                            <input asp-for="SendEmail" class="form-check-input" type="checkbox" />
+                            <label asp-for="SendEmail" class="form-check-label">Send Email Notification</label>
+                        </div>
+
+                        <!-- Send Notification Option -->
+                        <div class="form-check mb-3">
+                            <input asp-for="SendNotification" class="form-check-input" type="checkbox" />
+                            <label asp-for="SendNotification" class="form-check-label">Send App Notification</label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">Create Order</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Back to Home Link -->
+            <div class="text-center mt-3">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-link">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>

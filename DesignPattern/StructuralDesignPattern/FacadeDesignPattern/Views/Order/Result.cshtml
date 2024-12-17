@@ -1,0 +1,20 @@
+﻿@model Order
+
+<h2>Order Created Successfully</h2>
+
+<p><strong>Order Details:</strong></p>
+<ul>
+    <li>Order ID: @Model.OrderId</li>
+    <li>Product: @Model.ProductName</li>
+    <li>Quantity: @Model.Quantity</li>
+</ul>
+
+<p><strong>Messages:</strong></p>
+<ul>
+    @foreach (var message in Model.Messages)
+    {
+        <li>@message</li>
+    }
+</ul>
+
+<a asp-action="Create">Create Another Order</a>

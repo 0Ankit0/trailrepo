@@ -55,7 +55,6 @@ namespace AdapterDesignPattern.Adapter
 				}
 				rows.Add(rowDict);
 			}
-
 			return JsonSerializer.Serialize(rows, new JsonSerializerOptions
 			{
 				WriteIndented = true // For pretty-printing

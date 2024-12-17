@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Facade Design Pattern";
+}
+
+@section Styles {
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        .example, .explanation {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .code {
+            background-color: #2d2d2d;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: "Courier New", monospace;
+            overflow-x: auto;
+        }
+
+        .code pre {
+            margin: 0;
+        }
+
+        .real-life {
+            margin-top: 30px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 5px solid #2ecc71;
+        }
+
+        .real-life h3 {
+            margin-top: 0;
+        }
+
+        .list-item {
+            margin-bottom: 10px;
+        }
+
+        .callout {
+            background-color: #eafaf1;
+            padding: 10px;
+            border-left: 4px solid #2ecc71;
+            margin-top: 20px;
+        }
+    </style>
+}
+
+<h1>Facade Design Pattern Explained</h1>
+
+<div class="section">
+    <h2>What the Facade Design Pattern Does</h2>
+    <p>
+        The <strong>Facade Design Pattern</strong> provides a simplified interface to a larger, more complex subsystem. It acts as a single entry point for the client to interact with multiple components of a system, hiding the complexity behind a unified interface.
+    </p>
+</div>
+
+<div class="section">
+    <h2>Problem it Solves</h2>
+    <ul>
+        <li class="list-item"><strong>Too Many Subsystems:</strong> When clients interact with many subsystems directly, the code becomes hard to maintain and understand.</li>
+        <li class="list-item"><strong>High Complexity:</strong> Clients must understand and manage the intricate details of each subsystem.</li>
+        <li class="list-item"><strong>Code Duplication:</strong> Repeated use of similar logic to call multiple subsystems across different areas of the application.</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>How It Works</h2>
+    <p>
+        The Facade Pattern creates a single class (the Facade) that simplifies the interactions with multiple subsystems. Clients interact only with the Facade, which internally delegates the requests to the appropriate subsystems.
+    </p>
+</div>
+
+<div class="section">
+    <h2>Real-life Example</h2>
+    <div class="real-life">
+        <h3>Hotel Booking System</h3>
+        <p>
+            Imagine a hotel booking system where you need to handle multiple operations:
+        </p>
+        <ul>
+            <li class="list-item"><strong>Room Booking:</strong> Reserve a room for the guest.</li>
+            <li class="list-item"><strong>Payment Processing:</strong> Process the payment for the booking.</li>
+            <li class="list-item"><strong>Notification:</strong> Send a confirmation email or SMS to the guest.</li>
+        </ul>
+        <p>
+            Instead of calling these subsystems directly, you create a <strong>HotelBookingFacade</strong> that provides a simple method like `BookRoom()` to handle all these operations.
+        </p>
+    </div>
+</div>
+
+<div class="section">
+    <h2>F
