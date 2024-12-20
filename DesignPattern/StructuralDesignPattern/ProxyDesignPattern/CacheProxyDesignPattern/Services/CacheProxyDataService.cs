@@ -29,5 +29,14 @@ namespace CacheProxyDesignPattern.Services
 
             return data;
         }
+        public async Task<string> SetDataAsync(string key, string value)
+        {
+           return  await _realDataService.SetDataAsync(key, value);
+        }
+
+        public async Task<string> DeleteDataAsync(string key)
+        {
+             return await _realDataService.DeleteDataAsync(key);
+        }
     }
 }

@@ -12,10 +12,27 @@ namespace CacheProxyDesignPattern.Controllers
         {
             _dataService = dataService;
         }
-        public async Task<IActionResult> Index(string key="key")
+        public async Task<IActionResult> Index()
+        {
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetData(string key)
         {
             var data = await _dataService.GetDataAsync(key);
-            return View(data);
+            return Json(data);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SetData(string key, string value)
+        {
+            await _dataService.SetDataAsync(key, value);
+            return Ok();
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteData(string key)
+        {
+            await _dataService.DeleteDataAsync(key);
+            return Ok();
         }
     }
 }

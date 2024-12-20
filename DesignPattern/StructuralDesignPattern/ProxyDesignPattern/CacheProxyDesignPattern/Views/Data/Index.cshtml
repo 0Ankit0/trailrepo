@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Manage Data";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Manage Data</h2>
+
+    <!-- Add Data Form -->
+    <div class="card mb-4">
+        <div class="card-header">Add Data</div>
+        <div class="card-body">
+            <form id="addDataForm">
+                <div class="form-group">
+                    <label for="addKey">Key</label>
+                    <input type="text" class="form-control" id="addKey" required>
+                </div>
+                <div class="form-group">
+                    <label for="addValue">Value</label>
+                    <input type="text" class="form-control" id="addValue" required>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Add Data</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Data Form -->
+    <div class="card mb-4">
+        <div class="card-header">Delete Data</div>
+        <div class="card-body">
+            <form id="deleteDataForm">
+                <div class="form-group">
+                    <label for="deleteKey">Key</label>
+                    <input type="text" class="form-control" id="deleteKey" required>
+                </div>
+                <button type="submit" class="btn btn-danger mt-2">Delete Data</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Data -->
+    <div class="card">
+        <div class="card-header">View Data</div>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="viewKey">Key</label>
+                <input type="text" class="form-control" id="viewKey">
+                <button id="viewDataButton" class="btn btn-info mt-2">Get Data</button>
+            </div>
+            <div class="mt-4">
+                <h5>Data Result:</h5>
+                <pre id="dataResult" class="bg-light p-3"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Add Data
+            $('#addDataForm').submit(function (e) {
+                e.preventDefault();
+                const key = $('#addKey').val();
+                const value = $('#addValue').val();
+
+                $.ajax({
+                    url: '/Data/SetData?key=' + encodeURIComponent(key) + '&value=' + encodeURIComponent(value),
+                    method: 'POST',
+                    contentType: 'application/json',
+                    success: function () {
+                        alert('Data added successfully!');
+                        $('#addDataForm')[0].reset();
+                    },
+                    error: function () {
+                        alert('Failed to add data.');
+                    }
+                });
+            });
+
+            // Delete Data
+            $('#deleteDataForm').submit(function (e) {
+                e.preventDefault();
+                const key = $('#deleteKey').val();
+
+                $.ajax({
+                    url: `/Data/DeleteData?key=${encodeURIComponent(key)}`,
+                    method: 'DELETE',
+                    success: function () {
+                        alert('Data deleted successfully!');
+                        $('#deleteDataForm')[0].reset();
+                    },
+                    error: function () {
+                        alert('Failed to delete data.');
+                    }
+                });
+            });
+
+            // View Data
+            $('#viewDataButton').click(function () {
+                const key = $('#viewKey').val();
+
+                $.ajax({
+                    url: `/Data/GetData?key=${encodeURIComponent(key)}`,
+                    method: 'GET',
+                    success: function (data) {
+                        $('#dataResult').text(JSON.stringify(data, null, 2));
+                    },
+                    error: function () {
+                        $('#dataResult').text('Failed to retrieve data.');
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -7,21 +7,25 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
 
 // Add MemoryCache
 builder.Services.AddMemoryCache();
 
 // Register the real data service
-builder.Services.AddSingleton<IDataService, RealDataService>();
+builder.Services.AddSingleton<RealDataService>();
+//builder.Services.AddSingleton<IDataService, RealDataService>();
 
 // Register the proxy data service
-builder.Services.AddSingleton<IDataService>(sp =>
+builder.Services.AddSingleton<IDataService>(serviceProvider =>
 {
-    var realDataService = sp.GetRequiredService<RealDataService>();
-    var memoryCache = sp.GetRequiredService<IMemoryCache>();
-    return new CacheProxyDataService(realDataService, memoryCache);
+    var realService = serviceProvider.GetRequiredService<RealDataService>();
+    var cache = serviceProvider.GetRequiredService<IMemoryCache>();
+    return new CacheProxyDataService(realService, cache);
 });
+
+
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
